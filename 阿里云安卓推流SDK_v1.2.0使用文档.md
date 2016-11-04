@@ -20,7 +20,7 @@
 # 目录
 
 文档修订历史    
-参考文献	
+参考文献    
 1.  [简介](#1-简介)  
 1.1 [功能说明](#11功能说明)  
 1.2 [安装包说明](#12安装包说明)  
@@ -78,7 +78,7 @@
 
 * 6.doc：存放SDK相关接入文档。 
 
-### <a id="publisher_perform">1.3推流器性能</a>
+### 1.3推流器性能
 
 * 1.目前推流SDK推流采用的是硬编。
 
@@ -86,13 +86,13 @@
 
 * 3.SDK的大小：去除ffmpeg动态库之后SDK对应用的大小增加在1M左右.加上ffmepg在2M左右
 
-### <a id="matters">1.4注意事项</a>
+### 1.4注意事项
 
 * 1.推流器SDK目前只支持单实例。不能够同时开2个推流实例，同时只能存在一个实例，需要另开实例的时候，需要关闭之前存在的实例。
 
 * 2.操作系统版本要求android4.3以上。 
 
-## <a id="sys_arch">2. 系统框架</a>
+## 2. 系统框架
 
 ### 2.1系统框架图
 
@@ -241,6 +241,20 @@ mMediaRecorder.stopRecord();
 ```javascript
 mMediaRecorder.reset();//释放预览资源
 mMediaRecorder.release();//释放推流资源
+```
+
+* 10.添加水印
+
+```javascript
+//创建水印信息对象
+mWatermark = new AlivcWatermark.Builder()
+                    .watermarkUrl(bundle.getString(WATERMARK_PATH)) //水印图片地址
+                    .paddingX(bundle.getInt(WATERMARK_DX))                 //水印图片在x轴的偏移
+                    .paddingY(bundle.getInt(WATERMARK_DY))                 //水印图片在y轴的偏移
+                    .site(bundle.getInt(WATERMARK_SITE))                        //水印图片位置
+                    .build();
+
+mConfigure.put(AlivcMediaFormat.KEY_WATERMARK, mWatermark); //配置水印信息
 ```
 
 ##### 3） 网络状态事件通知-- OnNetworkStatusListener
@@ -501,11 +515,38 @@ void setOnNetworkStatusListener(OnNetworkStatusListener listener);
 ```
 >> 备注：*回调具体的信息在下面介绍*
 
+* 16.添加水印图片
+
+首先需要创建一个水印信息对像——AlivcWatermark
+
+```javascript
+AlivcWatermark mWatermark = new AlivcWatermark.Builder()
+                    .watermarkUrl(bundle.getString(WATERMARK_PATH)) //水印图片地址
+                    .paddingX(bundle.getInt(WATERMARK_DX))                 //水印图片在x轴的偏移
+                    .paddingY(bundle.getInt(WATERMARK_DY))                 //水印图片在y轴的偏移
+                    .site(bundle.getInt(WATERMARK_SITE))                        //水印图片位置
+                    .build();
+```
+水印位置有四个常量表示：
+
+| 常量值 | 含义 |
+|:-------|:---- |
+|AlivcWatermark.SITE_TOP_LEFT| 左上角 |
+|AlivcWatermark.SITE_TOP_RIGHT| 右上角 |
+|AlivcWatermark.SITE_BOTTOM_LEFT| 左下角 |
+|AlivcWatermark.SITE_BOTTOM_RIGHT| 右下角 |
+
+然后需要将该水印信息描述对像通过AlivcMediaRecorder#prepare接口的map参数传入进去
+
+```javascript
+mConfigure.put(AlivcMediaFormat.KEY_WATERMARK, mWatermark); //配置水印信息
+......
+mMediaRecorder.prepare(mConfigure, mPreviewSurface);
+```
 
 ### 4.3 OnNetworkStatusListener
 
 当调用startRecord()后，推流器开始推流，当前的网络连接状态会返回，用户需要注册该事件,以便获取到该时间通知，在结束和开始的状态都会给予返回.
-
 
 ```javascript
 public interface OnNetworkStatusListener {
