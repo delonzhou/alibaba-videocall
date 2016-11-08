@@ -9,9 +9,9 @@
 
 | 版本 | 作者 | 工作描述 | 修订历史 | 修改日期 |
 | ---- |:---- |:-------- |:-------- |:-------- |
-| 1.0  | 德胜 | 安卓推流SDK文档 | 2016-06-21 |
-| 1.1  | 德胜 | 安卓推流SDK文档 | 2016-07-02 |
-| 1.2  | 江浩 | 安卓推流SDK文档 | 2016-10-31 |
+| 1.0  | 德胜 | 安卓推流SDK文档 | |2016-06-21 |
+| 1.1  | 德胜 | 安卓推流SDK文档 | |2016-07-02 |
+| 1.2  | 江浩 | 安卓推流SDK文档 | |2016-10-31 |
 
 ## 参考文献
 
@@ -363,6 +363,7 @@ null
 | setOnRecordErrorListener | 设置推流错误回调 |
 | setOnRecordStatusListener | 设置推流的状态回调监听 |
 | setOnNetworkStatusListener | 设置网络状态的回调监听 |
+| getVersionName | 获取SDK版本名称 |
 
 下面详细介绍一下各个成员函数的具体使用：
 
@@ -542,6 +543,11 @@ AlivcWatermark mWatermark = new AlivcWatermark.Builder()
 mConfigure.put(AlivcMediaFormat.KEY_WATERMARK, mWatermark); //配置水印信息
 ......
 mMediaRecorder.prepare(mConfigure, mPreviewSurface);
+```
+* 17.获取SDK版本名称
+
+```javascript
+String getVersionName()
 ```
 
 ### 4.3 OnNetworkStatusListener
