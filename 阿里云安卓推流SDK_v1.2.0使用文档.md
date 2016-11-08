@@ -35,7 +35,7 @@
 3.3 [Demo示例](#33-Demo示例)  
 4.[接口说明](#4接口说明)  
 4.1 [AlivcMediaRecorderFactory](#41-AlivcMediaRecorderFactory)  
-4.2 [AlivcMediaRecorder](#42-AlivcMediaRecorder)  
+4.2 [AlivcMediaRecorder](#42-alivcmediarecorder)  
 4.3 [OnNetworkStatusListener](#43-OnNetworkStatusListener)  
 4.4 [OnRecordStatusListener](#44-OnRecordStatusListener)  
 4.5 [OnLiveRecordErrorListener](#-45OnLiveRecordErrorListener)  
