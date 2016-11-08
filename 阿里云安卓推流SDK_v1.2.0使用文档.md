@@ -19,30 +19,30 @@
 
 # 目录
 
-文档修订历史    
-参考文献    
-1.  [简介](#1-简介)  
-1.1 [功能说明](#11功能说明)  
-1.2 [安装包说明](#12安装包说明)  
-1.3 [推流器性能](#13推流器性能)  
-1.4 [注意事项](#14注意事项)  
-2. [系统框架](#2-系统框架)  
-2.1[系统框架图](#21系统框架图)    
-2.2[类框架图](#22类框架图)  
-3. [使用说明](#3-使用说明)  
-3.1 [开发环境配置](#31-开发环境配置)  
-3.2 [开发步骤](#32-开发步骤)  
-3.3 [Demo示例](#33-demo示例)  
-4.[接口说明](#4接口说明)  
-4.1 [AlivcMediaRecorderFactory](#41-alivcmediarecorderfactory)  
-4.2 [AlivcMediaRecorder](#42-alivcmediarecorder)  
-4.3 [OnNetworkStatusListener](#43-onnetworkstatuslistener)  
-4.4 [OnRecordStatusListener](#44-onrecordstatuslistener)  
-4.5 [OnLiveRecordErrorListener](#45-onliverecorderrorlistener)  
-5. [ErrorCode说明](#5-errorcode说明)  
-6. [打点日志](#6打点日志)  
-7. [注意事项](#7-注意事项)  
-8. [版权声明](#8-版权声明)  
+文档修订历史
+参考文献
+1.  [简介](#1-简介)
+1.1 [功能说明](#11功能说明)
+1.2 [安装包说明](#12安装包说明)
+1.3 [推流器性能](#13推流器性能)
+1.4 [注意事项](#14注意事项)
+2. [系统框架](#2-系统框架)
+2.1[系统框架图](#21系统框架图)
+2.2[类框架图](#22类框架图)
+3. [使用说明](#3-使用说明)
+3.1 [开发环境配置](#31-开发环境配置)
+3.2 [开发步骤](#32-开发步骤)
+3.3 [Demo示例](#33-demo示例)
+4.[接口说明](#4接口说明)
+4.1 [AlivcMediaRecorderFactory](#41-alivcmediarecorderfactory)
+4.2 [AlivcMediaRecorder](#42-alivcmediarecorder)
+4.3 [OnNetworkStatusListener](#43-onnetworkstatuslistener)
+4.4 [OnRecordStatusListener](#44-onrecordstatuslistener)
+4.5 [OnLiveRecordErrorListener](#45-onliverecorderrorlistener)
+5. [ErrorCode说明](#5-errorcode说明)
+6. [打点日志](#6打点日志)
+7. [注意事项](#7-注意事项)
+8. [版权声明](#8-版权声明)
 
 
 
@@ -56,27 +56,35 @@
 
 ### 1.1功能说明
 
-1. 方便快捷、低门槛实现媒体推流功能。用户无须关心内部实现细节，只需要自定义界面既可以实现专业级的推流应用。 
+1. 方便快捷、低门槛实现媒体推流功能。用户无须关心内部实现细节，只需要自定义界面既可以实现专业级的推流应用。
 
 2. 推流支持格式：rtmp
 
-3. 编码目前为硬编 
+3. 编码目前为硬编
 
 ### 1.2安装包说明
 
-推流器SDK的完整下载包中包含demo、doc、AAR等：
+推流器SDK的完整下载包中包含demo、doc、jar包、.so文件等：
 
 * 1.demo：主要存放了调用SDK的示例工程，可以帮助用户了解如何使用该SDK。
 
-* 2.AAR：推流SDK开发包, SDK建议使用Android Studio进行集成，对于使用eclipse的开发者可以参考Google提供的迁移方法 https://developer.android.com/studio/intro/migrate.html (此地址需要翻墙，也可自行百度解决）,将原应用迁移到Android Studio后再集成SDK。
+* 2.jar：推流SDK　java库, SDK建议使用Android Studio进行集成，对于使用eclipse的开发者可以参考Google提供的迁移方法 https://developer.android.com/studio/intro/migrate.html (此地址需要翻墙，也可自行百度解决）,将原应用迁移到Android Studio后再集成SDK。
 
-* 3.目前SDK包以AAR的形式给出。Android Studio用户只需采用导入Module的方式添加依赖AAR就可以了.
+* 3.添加libs里面给出的j ar依赖，并且将jniLibs整个拷贝到moudle-name/src/main中，然后在ｍoudle的build.gradle中加入以下配置（具体可参考Demo）：
 
-* 4.在需要集成的应用中新建一个Module，如下图:
+```javascript
+splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a'
+        }
 
-* 5.选择AAR方式导入，点击next。导入AlivcLiveRecord-release1.0.0 ,选择>> AlivcLiveRecord-release1.0.0.aar 文件，点击Finish。
+    }
+```
+注意：如果使用其他的第三方库也有对.so的依赖，则需要选取其他第三方库的*armeabi-v7a*的.so，一并放入*moudle-name/src/main/jniLibs/armeabi-v7a*中，如果其他第三方库没有给出armeabi-v7a的.so，则可以使用其armeabi的.so替代
 
-* 6.doc：存放SDK相关接入文档。 
+* 4.doc：存放SDK相关接入文档。
 
 ### 1.3推流器性能
 
@@ -90,7 +98,7 @@
 
 * 1.推流器SDK目前只支持单实例。不能够同时开2个推流实例，同时只能存在一个实例，需要另开实例的时候，需要关闭之前存在的实例。
 
-* 2.操作系统版本要求android4.3以上。 
+* 2.操作系统版本要求android4.3以上。
 
 ## 2. 系统框架
 
@@ -98,13 +106,13 @@
 
 ### 2.2类框架图
 
-无
+![类框架图](http://static.zybuluo.com/Mulberry/wyqez1faw930qiasajgv8a7u/AlivcMediaRecorder%E6%8E%A5%E5%8F%A3%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
 
 ## 3. 使用说明
 
 ### 3.1 开发环境配置
 
-* 1.需要准备Android运行环境,以及硬件CPU支持ARMv7或ARMv7s的安卓设备。 
+* 1.需要准备Android运行环境,以及硬件CPU支持ARMv7或ARMv7s的安卓设备。
 
 * 2.权限开通，在阿里云上申请推流SDK开发权限。
 
@@ -260,7 +268,7 @@ mConfigure.put(AlivcMediaFormat.KEY_WATERMARK, mWatermark); //配置水印信息
 ##### 3） 网络状态事件通知-- OnNetworkStatusListener
 OnNetworkStatusListener：
 
-```javascript 
+```javascript
 /**
  * 网络较差时的回调，此时推流buffer为满的状态，会执行丢包，此时数据流不能正常推送
  */
@@ -281,11 +289,11 @@ void onConnectionStatusChange(int status);
  * @return　false:停止重连　true:允许重连
  */
 boolean onNetworkReconnect();
-```  
-  
+```
+
 ##### 4） 错误事件通知中：
 
-```javascript    
+```javascript
 private OnLiveRecordErrorListener mOnErrorListener = new OnLiveRecordErrorListener() {
     @Override
     public void onError(int errorCode) {
@@ -305,12 +313,12 @@ private OnLiveRecordErrorListener mOnErrorListener = new OnLiveRecordErrorListen
     }
 };
 ```
-## 4.接口说明 
+## 4.接口说明
 
 SDK中提供了两个类AlivcMediaRecorder和AlivcMediaRecorderFactory，其中AlivcMediaRecorder是推流SDK使用接口类，AlivcMediaRecorderFactory用来创建推流器器AlivcMediaRecorder。同时提供了多个事件通知接口，用来监听推流器的各种状态。
 
 | 类名 | 功能 |
-|:--- |:-----| 
+|:--- |:-----|
 | AlivcMediaRecorderFactory | 创建推流器接口 |
 | AlivcMediaRecorder | 推流功能接口类 |
 | AlivcMediaFormat | 推流器可配参数类 |
@@ -333,7 +341,7 @@ AlivcMediaRecorderFactory.createMediaRecorder()
 
 createMediaRecorder用来创建推流器，返回AlivcMediaRecorder类。
 
-#### 参数: 
+#### 参数:
 
 null
 
@@ -356,7 +364,7 @@ null
 | reset | 释放预览资源,对应的是prepare |
 | focusing | 对焦 |
 | setZoom | 缩放 |
-| setPreviewSize | 设置预览大小 
+| setPreviewSize | 设置预览大小
 | addFlag | 添加美颜 |
 | removeFlag | 移除美颜 |
 | release | 释放资源对应: init |
@@ -377,7 +385,7 @@ void init(Context context);
 ```
 * 2.开始预览
 
-```javascript  
+```javascript
 /**
  * 开始预览
  * @param  params: 推流过程中不可动态改变的参数.
@@ -389,7 +397,7 @@ void init(Context context);
 
 ```javascript
 /**
- * @param outputUrl 推流地址URL 
+ * @param outputUrl 推流地址URL
  */
  void startRecord(String outputUrl);
 ```
@@ -417,7 +425,7 @@ void reset();
 ```javascript
 /**
  * @param xRatio 横向坐标点所占的比例
- * @param yRatio 纵向坐标点所占的比例 
+ * @param yRatio 纵向坐标点所占的比例
  */
 void focusing(float xRatio, float yRatio);
 ```
@@ -427,7 +435,7 @@ void focusing(float xRatio, float yRatio);
 ```javascript
 /**
  * 这是个新增加的接口，老接口为下面的接口，已经废弃，不建议使用
- * 
+ *
  * @param scaleFactor参数为缩放比例
  */
 void setZoom(float scaleFactor);
@@ -437,7 +445,7 @@ void setZoom(float scaleFactor);
 ```javascript
 /**
  * 这个接口已经废弃了，建议使用上面的接口
- * 
+ *
  * @param scaleFactor参数为缩放比例
  */
 @Deceperated
@@ -454,7 +462,7 @@ void setPreviewSize(int width, int height);
 ```
 
 * 10.开启美颜／开启手动对焦／开启闪光灯／开启静音推流
-    
+
 ```javascript
 /**
  * 增加效果 如：美颜，对焦，闪光灯，静音等
@@ -462,7 +470,7 @@ void setPreviewSize(int width, int height);
  * @see AlivcMediaFormat#FLAG_AUTO_FOCUS_ON
  * @see AlivcMediaFormat#FLAG_FLASH_MODE_ON
  * @see AlivcMediaFormat#FLAG_MUTE_ON
- * @see AlivcMediaRecorder#removeFlag(int) 
+ * @see AlivcMediaRecorder#removeFlag(int)
  * @param flag
  */
 void addFlag(int flag);
@@ -485,12 +493,12 @@ void removeFlag(int flag);
 
 ```javascript
 void release();
-```   
+```
 * 13.设置推流错误回调
 
 ```javascript
 /**
- * @param listener 直播错误回调 
+ * @param listener 直播错误回调
  */
 void setOnRecordErrorListener(OnLiveRecordErrorListener listener);
 ```
@@ -500,7 +508,7 @@ void setOnRecordErrorListener(OnLiveRecordErrorListener listener);
 
 ```javascript
 /**
- * @param listener 直播状态回调 
+ * @param listener 直播状态回调
  */
 void setOnRecordStatusListener(OnRecordStatusListener listener);
 ```
@@ -510,7 +518,7 @@ void setOnRecordStatusListener(OnRecordStatusListener listener);
 
 ```javascript
 /**
- * @param listener 直播网络状态回调 
+ * @param listener 直播网络状态回调
  */
 void setOnNetworkStatusListener(OnNetworkStatusListener listener);
 ```
@@ -581,7 +589,7 @@ public interface OnNetworkStatusListener {
    * 表示不再尝试
    */
   boolean onNetworkReconnectFailed();
-}	
+}
 
 ```
 <font color="#ff0000">
@@ -602,7 +610,7 @@ public interface OnRecordStatusListener {
     /*** 关闭摄像头   */
     void onDeviceDetach();
     /**摄像头打开失败**/
-    void onDeviceAttachFailed(int facing)   
+    void onDeviceAttachFailed(int facing)
 }
 ```
 
