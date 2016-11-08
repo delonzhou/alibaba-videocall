@@ -38,7 +38,7 @@
 4.2 [AlivcMediaRecorder](#42-alivcmediarecorder)  
 4.3 [OnNetworkStatusListener](#43-onnetworkstatuslistener)  
 4.4 [OnRecordStatusListener](#44-onrecordstatuslistener)  
-4.5 [OnLiveRecordErrorListener](#-45onliverecorderrorlistener)  
+4.5 [OnLiveRecordErrorListener](#45-onliverecorderrorlistener)  
 5. [ErrorCode说明](#5-errorcode说明)  
 6. [打点日志](#6打点日志)  
 7. [注意事项](#7-注意事项)  
