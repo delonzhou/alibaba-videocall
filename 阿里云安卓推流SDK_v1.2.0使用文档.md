@@ -345,7 +345,7 @@ createMediaRecorder用来创建推流器，返回AlivcMediaRecorder类。
 
 #### 参数:
 
-null
+空
 
 #### 返回值：返回空为错误，正确则为有效的AlivcMediaRecorder值。
 
@@ -595,11 +595,10 @@ public interface OnNetworkStatusListener {
 
 ```
 <font color="#ff0000">
-注意：这里 *onNetworkReconnect()*接口已经移除掉，现在网络重连为ｓｄｋ自动执行，在重连指定时间后弱依然不能重连成功，则会执行
-*onNetworkReconnectFailed()*的回调，表示重连失败
+注意：这里 *onNetworkReconnect()*接口已经移除掉，现在网络重连为ｓｄｋ自动执行，在重连指定时间后弱依然不能重连成功，则会执行*onNetworkReconnectFailed()*的回调，表示重连失败。
 </font>
 ### 4.4 OnRecordStatusListener
-当prepare完成后，会发出该事件通知消息，用户需要注册该事件，采集开始得到摄像头的状态以便做一些事情。比如进入对焦一次.
+当prepare完成后，会发出该事件通知消息，用户需要注册该事件，采集开始得到摄像头的状态以便做一些事情，比如进入对焦一次。
 
 ```javascript
 public interface OnRecordStatusListener {
@@ -679,7 +678,7 @@ AlivcRecordReporter#getString(int key);
 打点事件是通过订阅的形式获取监听，通过AlivcMediaRecorder#subscribeEvent()订阅一个事件，通过AlivcMediaRecorder#unSubscribeEvent()取消订阅。
 
 订阅事件：
-	需要创建一个AlivcEventSubscriber对象，该对象中包含要订阅的事件类型以及对应的事件响应，事件类型可以通过AlivcEvent$EventType类中定义的常量来表示。
+	需要创建一个AlivcEventSubscriber对象，该对象中包含要订阅的事件类型以及对应的事件响应，事件类型可以通过AlivcEvent#EventType类中定义的常量来表示。
 事件响应需要实现AlivcEventResponse接口，其中的onEvent表示事件发生，其参数AlivcEvent代表一个事件，AlivcEvent#getBundle()方法获取一个Bundle对象，该对象存储了事件的一些相关信息，具体每个事件对应有哪些信息可以查看相关类文档，获取事件信息的Key值可以通过AlivcEvent$EventBundleKey中定义的常量表示
 
 ## 7. 注意事项
