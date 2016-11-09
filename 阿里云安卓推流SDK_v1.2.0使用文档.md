@@ -104,9 +104,11 @@ splits {
 
 ### 2.1系统框架图
 
+![系统框架图](http://static.zybuluo.com/Mulberry/wyqez1faw930qiasajgv8a7u/AlivcMediaRecorder%E6%8E%A5%E5%8F%A3%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
+
 ### 2.2类框架图
 
-![类框架图](http://static.zybuluo.com/Mulberry/wyqez1faw930qiasajgv8a7u/AlivcMediaRecorder%E6%8E%A5%E5%8F%A3%E6%B5%81%E7%A8%8B%E5%9B%BE.png)
+无
 
 ## 3. 使用说明
 
