@@ -47,7 +47,67 @@ AlivcVideoChat是一款适用于 android 平台的、提供了网络连麦功能
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 ```
+###混淆配置###
+```javascript
+####### 连麦SDK ######## 
+-keepclasseswithmembernames class * {
+    native <methods>;
+} -keep public class com.alivc.** {
+    *;
+}
 
+######### android websocket #########
+-keep class com.koushikdutta.async.**{ *;}
+-keep class com.alibaba.sdk.** {*;}
+-dontwarn javax.annotation.**
+-dontwarn net.jcip.annotations.**
+
+######### okhttp ########
+-dontwarn com.squareup.okhttp.**
+-keep class com.squareup.okhttp.** { *;}
+-dontwarn okio.**
+
+########## gson ###########
+-keepattributes Signature 
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+ # Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.examples.android.model.** { *; } 
+
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+########## retorfit ########
+# Platform calls Class.forName on types which do not exist on Android to determine platform.
+-dontnote retrofit2.Platform
+# Platform used when running on RoboVM on iOS. Will not be used at runtime.
+-dontnote retrofit2.Platform$IOS$MainThreadExecutor
+# Platform used when running on Java 8 VMs. Will not be used at runtime.
+-dontwarn retrofit2.Platform$Java8
+# Retain generic type information for use by reflection by converters and adapters.
+-keepattributes Signature
+# Retain declared checked exceptions for use by a Proxy instance.
+
+-keepattributes Exceptions
+ ######### rxjava #########
+-dontwarn sun.misc.**
+-keepclassmembers class
+rx.internal.util.unsafe.*ArrayQueue*Field* {
+ long producerIndex;
+ long consumerIndex;
+}
+-keepclassmembers class
+rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+ rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class
+rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+ rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+```
 ###快速安装###
 
 ##demo使用说明##
@@ -300,8 +360,18 @@ RestAPI主要依赖了**Retrofit**框架，并且结合**RxJava**一直使用，
 **停止推流**
     
 ```
-	// 结束本次推流
-    [self.publiserVideoCall stopPublishing];
+/**
+ * 停止推流
+ */
+ public void stopPublish() {
+ 	if (null != mChatHost) {
+ 	   ......
+ 	   mChatHost.stopPublishing();
+ 	   mChatHost.finishPublishing();
+ 	   ......
+ 	}
+}
+
 ```
                      
 **关闭直播**
@@ -330,8 +400,7 @@ RestAPI主要依赖了**Retrofit**框架，并且结合**RxJava**一直使用，
 
 **异常处理**
 
-需要在初始化时分别设置错误信息回调和状态信息回调，具体每个Error Code和Info Code的含义请参考
-*com.alivc.publisher.MediaError*接口文档
+需要在初始化时分别设置错误信息回调和状态信息回调，具体每个Error Code和Info Code的含义请参考*com.alivc.publisher.MediaError*接口文档
 
 ```javascript
     /**
@@ -381,37 +450,37 @@ RestAPI主要依赖了**Retrofit**框架，并且结合**RxJava**一直使用，
 
 **观看直播**
 
-每次播放都需要创建一个新的SurfaceView，并且将其与*com.alibaba.videocall.ui.WatchLiveActivity#mPlaySurfaceCB*
+获取播放时渲染视频所用的SurfaceView，并且将其与*com.alibaba.videocall.ui.WatchLiveActivity#mPlaySurfaceCB*
 绑定，在mPlaySurfaceCB的surfaceCreated中执行播放的逻辑
     
 ```javascript    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ......//省略
-    
-        startToPlay(); // 一进入界面就播放主播直播
+        mPlaySurfaceView.getHolder().addCallback(mPlaySurfaceCB);
     }
 ```
 创建一个新的SurfaceView，并且绑定mPlaySurfaceCB
 
 ```javascript
-    `/**
-     * 开始播放直播（非连麦）
-     */
-    public void startToPlay() {
-        if(mBigSurfaceView != null) {
-            mBigSurfaceView.getHolder().removeCallback(mPublishSurfaceCB);
-        }
-        mBigContainer.removeAllViews();
-        mBigSurfaceView = new SurfaceView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        params.gravity = Gravity.CENTER;
-        mBigSurfaceView.setLayoutParams(params);
-        mBigContainer.addView(mBigSurfaceView);
-        mBigSurfaceView.setZOrderOnTop(false);
-        mBigSurfaceView.getHolder().addCallback(mPlaySurfaceCB);
-        mPlayInBigView = true;
-    }
+SurfaceHolder.Callback mPlaySurfaceCB = new SurfaceHolder.Callback() {
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		Log.d(TAG, "parter player surface create.");
+		holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+		holder.setKeepScreenOn(true);
+		if (mPlaySurfaceStatus == SurfaceStatus.UNINITED) {
+			mPlaySurfaceStatus = SurfaceStatus.CREATED;
+			mWatchLivePresenter.startToPlay(mPlaySurfaceView);
+		} else if (mPlaySurfaceStatus ==
+   						SurfaceStatus.DESTROYED) {
+   	       mPlaySurfaceStatus = SurfaceStatus.RECREATED;
+   	    }
+   	} 
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {         Log.d(TAG, "parter player surface change.");         mPlaySurfaceStatus = SurfaceStatus.CHANGED;          if ((mPreviewSurfaceStatus == null                 || mPreviewSurfaceStatus == SurfaceStatus.UNINITED                 || mPreviewSurfaceStatus == SurfaceStatus.CHANGED         ) && mPlaySurfaceStatus == SurfaceStatus.CHANGED) {             mWatchLivePresenter.mediaResume(mPlaySurfaceView, mPreviewSurfaceView);         }          if (shouldOffLine) {             mWatchLivePresenter.sdkOfflineChat();   //在这里调用真正的offlineChat，保证渲染出得最后一帧数据是正常播放的尺寸，而不是小窗播放的尺寸             shouldOffLine = false;         }     }      @Override     public void surfaceDestroyed(SurfaceHolder holder) {         mPlaySurfaceStatus = SurfaceStatus.DESTROYED;         Log.d(TAG, "parter player surface destroy.");     } };
+
 ```
 ```javascript
     SurfaceHolder.Callback mPlaySurfaceCB = new SurfaceHolder.Callback() {
@@ -2103,3 +2172,5 @@ public String getSDKVersion();
 参数：无
 
 返回值：版本号。
+
+
